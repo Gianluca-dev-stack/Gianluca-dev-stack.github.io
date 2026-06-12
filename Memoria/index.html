@@ -1,0 +1,1039 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Memoria - Governed context for AI coding tools</title>
+    <meta
+      name="description"
+      content="Memoria is a local-first, approval-first memory layer for AI coding tools. Approve project context once, preview what would be shared, and reuse it across Claude, Codex, and other coding agents."
+    />
+    <link rel="canonical" href="https://gianluca-dev-stack.github.io/Memoria/" />
+    <meta name="robots" content="index,follow" />
+    <meta name="application-name" content="Memoria" />
+    <meta name="author" content="Gianluca Sausa" />
+    <meta name="keywords" content="Memoria, AI coding tools, MCP memory, Claude Code memory, Codex memory, governed context, local-first memory" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Memoria" />
+    <meta property="og:title" content="Memoria - Governed context for AI coding tools" />
+    <meta
+      property="og:description"
+      content="Stop re-explaining your repo to every AI tool. Memoria lets solo developers approve local project context once, preview what would be shared, and reuse it across AI coding tools."
+    />
+    <meta property="og:url" content="https://gianluca-dev-stack.github.io/Memoria/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Memoria - Governed context for AI coding tools" />
+    <meta
+      name="twitter:description"
+      content="Local-first, approval-first project context for AI coding tools. Private beta access is email opt-in."
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Memoria",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Windows",
+        "description": "Memoria is a local-first, approval-first memory layer for AI coding tools. It helps solo developers approve project context once, preview what would be shared, and reuse approved context across AI coding tools.",
+        "url": "https://gianluca-dev-stack.github.io/Memoria/",
+        "author": {
+          "@type": "Person",
+          "name": "Gianluca Sausa"
+        },
+        "offers": {
+          "@type": "Offer",
+          "availability": "https://schema.org/LimitedAvailability",
+          "price": "0",
+          "priceCurrency": "USD",
+          "description": "Private beta access is handled by email opt-in."
+        }
+      }
+    </script>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f8f4;
+        --surface: #ffffff;
+        --ink: #18231f;
+        --muted: #5e6b65;
+        --line: #d9ded7;
+        --accent: #17664b;
+        --accent-strong: #104b39;
+        --accent-soft: #e6f1eb;
+        --rust: #a7552a;
+        --blue: #496d89;
+        --shadow: 0 24px 60px rgba(28, 39, 33, 0.12);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        min-width: 320px;
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .page {
+        overflow: hidden;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: min(1120px, calc(100vw - 40px));
+        margin: 0 auto;
+        padding: 22px 0 10px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 18px;
+        font-weight: 760;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border: 1px solid rgba(23, 102, 75, 0.26);
+        border-radius: 8px;
+        background: #ffffff;
+        color: var(--accent);
+        box-shadow: 0 8px 24px rgba(23, 102, 75, 0.14);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 0.96fr) minmax(360px, 1.04fr);
+        gap: 42px;
+        align-items: center;
+        width: min(1120px, calc(100vw - 40px));
+        min-height: calc(100vh - 80px);
+        margin: 0 auto;
+        padding: 62px 0 70px;
+      }
+
+      .hero-copy {
+        display: grid;
+        gap: 24px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 760px;
+        font-size: clamp(46px, 6vw, 78px);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .support {
+        max-width: 660px;
+        color: #31413a;
+        font-size: clamp(19px, 2.2vw, 25px);
+        line-height: 1.34;
+      }
+
+      .discipline {
+        color: var(--rust);
+        font-size: 18px;
+        font-weight: 720;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        padding: 0 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .button.primary {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #ffffff;
+      }
+
+      .button.secondary {
+        background: #ffffff;
+        color: var(--ink);
+      }
+
+      .hero-note {
+        max-width: 610px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      .beta-note {
+        display: grid;
+        gap: 8px;
+        max-width: 610px;
+        padding: 14px;
+        border: 1px solid rgba(23, 102, 75, 0.18);
+        border-radius: 8px;
+        background: #ffffff;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .beta-note strong {
+        color: var(--ink);
+      }
+
+      .beta-note code {
+        overflow-wrap: anywhere;
+        color: #24352e;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        font-size: 13px;
+      }
+
+      .visual-frame {
+        position: relative;
+        margin: 0;
+      }
+
+      .visual-frame::before {
+        position: absolute;
+        inset: -22px -18px auto auto;
+        width: 42%;
+        height: 38%;
+        border: 1px solid rgba(73, 109, 137, 0.16);
+        border-radius: 8px;
+        background: #dfe8ed;
+        content: "";
+        transform: rotate(3deg);
+        z-index: -1;
+      }
+
+      .product-preview {
+        display: grid;
+        gap: 13px;
+        width: 100%;
+        min-height: 520px;
+        padding: 18px;
+        border: 1px solid #cfd7ce;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: var(--shadow);
+      }
+
+      .preview-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .preview-title {
+        display: grid;
+        gap: 5px;
+      }
+
+      .preview-title strong {
+        font-size: 19px;
+      }
+
+      .preview-muted,
+      .preview-meta {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .preview-pills,
+      .preview-meta,
+      .preview-matches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+
+      .preview-pill {
+        display: inline-flex;
+        min-height: 24px;
+        align-items: center;
+        padding: 0 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #ffffff;
+        color: #41504a;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .preview-query {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+      }
+
+      .preview-input {
+        min-height: 38px;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        color: #3a4942;
+        background: #ffffff;
+        font-size: 14px;
+      }
+
+      .preview-button {
+        display: inline-flex;
+        min-height: 38px;
+        align-items: center;
+        justify-content: center;
+        padding: 0 12px;
+        border-radius: 7px;
+        background: var(--accent);
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .preview-card {
+        display: grid;
+        gap: 12px;
+        padding: 14px;
+        border: 1px solid rgba(23, 102, 75, 0.26);
+        border-radius: 8px;
+        background: #fbfcfa;
+      }
+
+      .preview-card h3 {
+        font-size: 17px;
+      }
+
+      .preview-content {
+        color: #20302a;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .preview-snippet {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .caption {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      section {
+        width: min(1120px, calc(100vw - 40px));
+        margin: 0 auto;
+        padding: 76px 0;
+      }
+
+      .section-head {
+        display: grid;
+        max-width: 760px;
+        gap: 12px;
+        margin-bottom: 28px;
+      }
+
+      h2 {
+        font-size: clamp(31px, 4vw, 48px);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .section-head p,
+      .plain-copy {
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.58;
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .step,
+      .feature,
+      .faq-item {
+        display: grid;
+        gap: 12px;
+        padding: 20px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+      }
+
+      .step strong {
+        color: var(--accent);
+        font-size: 14px;
+        text-transform: uppercase;
+      }
+
+      .step h3,
+      .feature h3,
+      .faq-item h3 {
+        font-size: 20px;
+        line-height: 1.2;
+      }
+
+      .step p,
+      .feature p,
+      .faq-item p {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .trust-band {
+        width: 100%;
+        background: #eef3ef;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .trust-band section {
+        display: grid;
+        grid-template-columns: 0.8fr 1.2fr;
+        gap: 34px;
+        align-items: start;
+      }
+
+      .trust-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .trust-row {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 13px 0;
+        border-bottom: 1px solid rgba(24, 35, 31, 0.12);
+        color: #26352f;
+        line-height: 1.5;
+      }
+
+      .trust-row svg {
+        flex: 0 0 auto;
+        margin-top: 2px;
+        color: var(--accent);
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .proof-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .proof-card {
+        display: grid;
+        gap: 10px;
+        min-height: 160px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+      }
+
+      .proof-card strong {
+        color: var(--accent);
+        font-size: 14px;
+        text-transform: uppercase;
+      }
+
+      .proof-card p {
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .feature {
+        min-height: 210px;
+      }
+
+      .feature-icon {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        border: 1px solid rgba(23, 102, 75, 0.22);
+        border-radius: 8px;
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+
+      .demo {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 22px;
+        align-items: start;
+      }
+
+      .script {
+        padding: 22px;
+        border: 1px solid #cfd7ce;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 16px 42px rgba(28, 39, 33, 0.08);
+      }
+
+      .script ol {
+        display: grid;
+        gap: 14px;
+        padding-left: 22px;
+        margin: 0;
+      }
+
+      .script li {
+        color: #2e3d37;
+        line-height: 1.55;
+      }
+
+      .boundary {
+        display: grid;
+        gap: 16px;
+        padding: 22px;
+        border: 1px solid rgba(167, 85, 42, 0.28);
+        border-radius: 8px;
+        background: #fff8f2;
+      }
+
+      .boundary strong {
+        color: var(--rust);
+      }
+
+      .faq {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .final-cta {
+        display: grid;
+        gap: 20px;
+        max-width: 760px;
+        text-align: left;
+      }
+
+      .beta-request {
+        display: grid;
+        gap: 14px;
+        padding: 20px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .beta-request h3 {
+        font-size: 20px;
+      }
+
+      .beta-request ul {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding-left: 20px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .email-fallback {
+        display: grid;
+        gap: 6px;
+        padding: 12px;
+        border: 1px solid rgba(23, 102, 75, 0.2);
+        border-radius: 8px;
+        background: var(--accent-soft);
+        color: #26352f;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .email-fallback code {
+        overflow-wrap: anywhere;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        font-size: 13px;
+      }
+
+      .footer {
+        width: min(1120px, calc(100vw - 40px));
+        margin: 0 auto;
+        padding: 28px 0 44px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      @media (max-width: 920px) {
+        .hero,
+        .trust-band section,
+        .demo {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-top: 44px;
+        }
+
+        .steps,
+        .features,
+        .proof-grid,
+        .faq {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .nav {
+          width: min(100vw - 28px, 1120px);
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .hero,
+        section,
+        .footer {
+          width: min(100vw - 28px, 1120px);
+        }
+
+        .hero {
+          gap: 30px;
+          padding: 36px 0 54px;
+        }
+
+        .cta-row,
+        .button {
+          width: 100%;
+        }
+
+        .product-preview {
+          min-height: auto;
+          padding: 14px;
+        }
+
+        .preview-top,
+        .preview-query {
+          grid-template-columns: 1fr;
+          flex-direction: column;
+        }
+
+        .preview-button {
+          width: 100%;
+        }
+
+        section {
+          padding: 54px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="nav">
+        <a class="brand" href="#top" aria-label="Memoria home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M7 6.5h8.5a3.5 3.5 0 0 1 0 7H10a3 3 0 0 0 0 6h7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <path d="M7 6.5a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" fill="currentColor" opacity=".2" />
+            </svg>
+          </span>
+          Memoria
+        </a>
+        <nav class="nav-links" aria-label="Landing page sections">
+          <a href="#how">How it works</a>
+          <a href="#trust">Trust</a>
+          <a href="#demo">Demo</a>
+          <a href="mailto:sausagianluca@gmail.com?subject=Memoria%20private%20beta%20request&body=Hi%20Gianluca%2C%0A%0AI%27d%20like%20to%20test%20Memoria.%0AOS%20%28Windows%20preferred%20for%20current%20beta%29%3A%20%0AAI%20coding%20tool%3A%20%0ACan%20test%20in%20the%20next%2048%20hours%3A%20yes%2Fno%0A%0AI%20will%20use%20fake%20demo%20memory%20only.%0AI%20will%20not%20enter%20API%20keys%2C%20passwords%2C%20private%20code%2C%20customer%20data%2C%20PII%2C%20or%20regulated%20data.%0A">Request beta access</a>
+        </nav>
+      </header>
+
+      <main id="top">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <h1 id="hero-title">Stop re-explaining your repo to every AI tool.</h1>
+            <p class="support">Approve project context once. Reuse it across AI tools.</p>
+            <p class="discipline">Governed context for AI coding tools.</p>
+            <div class="cta-row">
+              <a class="button primary" href="mailto:sausagianluca@gmail.com?subject=Memoria%20private%20beta%20request&body=Hi%20Gianluca%2C%0A%0AI%27d%20like%20to%20test%20Memoria.%0AOS%20%28Windows%20preferred%20for%20current%20beta%29%3A%20%0AAI%20coding%20tool%3A%20%0ACan%20test%20in%20the%20next%2048%20hours%3A%20yes%2Fno%0A%0AI%20will%20use%20fake%20demo%20memory%20only.%0AI%20will%20not%20enter%20API%20keys%2C%20passwords%2C%20private%20code%2C%20customer%20data%2C%20PII%2C%20or%20regulated%20data.%0A">Request beta access</a>
+              <a class="button secondary" href="#demo">See how it works</a>
+            </div>
+            <div class="beta-note" aria-label="Private beta access details">
+              <strong>Join the private beta by requesting access. Private beta access is email opt-in.</strong>
+              <span>Tell me your OS (Windows preferred for current beta) and which AI coding tool you want to test. Also say whether you can test within 48 hours using fake demo memory only.</span>
+              <span>No signup form, account, cloud workspace, or automated access yet. The current package is Windows-first.</span>
+              <span>If the button opens the wrong app, email <code>sausagianluca@gmail.com</code> with subject <code>Memoria private beta request</code>.</span>
+            </div>
+            <p class="hero-note">
+              Memoria is a local-first memory layer that lets developers approve project context once and reuse it across AI tools.
+              Context Preview, History, governed MCP tools, and content-free receipts show what Memoria would share, suppress, and explain before a tool receives approved context.
+              Disciplined context for AI coding tools.
+            </p>
+          </div>
+          <figure class="visual-frame">
+            <div class="product-preview" role="img" aria-label="Static preview of Memoria Context Preview showing approved memory, suppressed counts, and a content-free receipt">
+              <div class="preview-top">
+                <div class="preview-title">
+                  <strong>What this AI tool would see</strong>
+                  <span class="preview-muted">Preview what will be shared from active approved memory.</span>
+                  <span class="preview-muted">This preview shows what Memoria would share. It does not prove what the AI model will use.</span>
+                </div>
+                <div class="preview-pills">
+                  <span class="preview-pill">Current project</span>
+                  <span class="preview-pill">approved-only retrieval</span>
+                  <span class="preview-pill">content-free receipt</span>
+                </div>
+              </div>
+              <div class="preview-query">
+                <div class="preview-input">How should I add feature state?</div>
+                <div class="preview-button">Preview what will be shared</div>
+              </div>
+              <article class="preview-card">
+                <h3>Will be shared</h3>
+                <div class="preview-meta">
+                  <span class="preview-pill">Why this appears</span>
+                  <span class="preview-pill">Approved for this project</span>
+                  <span class="preview-pill">convention</span>
+                  <span class="preview-pill">high confidence</span>
+                  <span class="preview-pill">score 7</span>
+                  <span class="preview-pill">claude-code</span>
+                </div>
+                <p class="preview-content">
+                  This project uses Zustand slices for feature state. Keep slice names aligned with feature folders.
+                </p>
+                <p class="preview-snippet">
+                  Matched on feature state and project convention. Rejected, archived, deprecated, and replaced memories are not shared.
+                </p>
+                <div class="preview-matches">
+                  <span class="preview-pill">tags: zustand, feature-state</span>
+                  <span class="preview-pill">Matched terms: feature, state</span>
+                  <span class="preview-pill">Matched tags: feature-state</span>
+                </div>
+              </article>
+              <article class="preview-card">
+                <h3>Context receipt</h3>
+                <div class="preview-meta">
+                  <span class="preview-pill">receipt hash present</span>
+                  <span class="preview-pill">used 1</span>
+                  <span class="preview-pill">suppressed 2</span>
+                  <span class="preview-pill">freshness warnings 0</span>
+                </div>
+                <p class="preview-snippet">
+                  History records safe counts and reason codes. Review suggestions can point to duplicates or replacements, but they stay pending until approved.
+                </p>
+              </article>
+            </div>
+            <figcaption class="caption">Static product preview based on the current Memoria Context Preview, History, and review-suggestion flow.</figcaption>
+          </figure>
+        </section>
+
+        <section id="how" aria-labelledby="how-title">
+          <div class="section-head">
+            <h2 id="how-title">Approve once. Reuse safely.</h2>
+            <p>
+              Memoria keeps the beta loop small: create a proposal, review it, approve or reject it, then preview what approved memory would return for a project-scoped request.
+            </p>
+          </div>
+          <div class="steps">
+            <article class="step">
+              <strong>Step 1</strong>
+              <h3>Create a proposal</h3>
+              <p>New project context starts pending, not active. Suggested memory does not reach AI tools before review.</p>
+            </article>
+            <article class="step">
+              <strong>Step 2</strong>
+              <h3>Approve or reject</h3>
+              <p>Edit useful context before approval, or reject it. Pending, rejected, archived, deprecated, and replaced memories are not shared.</p>
+            </article>
+            <article class="step">
+              <strong>Step 3</strong>
+              <h3>Preview retrieval</h3>
+              <p>Context Preview shows approved-only project memory with score, snippet, matched terms, tags, source, and project path.</p>
+            </article>
+          </div>
+        </section>
+
+        <div class="trust-band" id="trust">
+          <section aria-labelledby="trust-title">
+            <div class="section-head">
+              <h2 id="trust-title">Trust is the workflow.</h2>
+              <p>
+                Approval is trust calibration. Memoria makes durable context visible before an AI tool can reuse it.
+              </p>
+            </div>
+            <div class="trust-list" aria-label="Trust boundaries">
+              <div class="trust-row">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 12.5 10 17 19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Memoria stores beta data locally by default in SQLite.</span>
+              </div>
+              <div class="trust-row">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 12.5 10 17 19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Retrieval is approved-only and project-scoped.</span>
+              </div>
+              <div class="trust-row">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 12.5 10 17 19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>The current beta has no hidden telemetry, cloud sync, accounts, or automatic memory activation.</span>
+              </div>
+              <div class="trust-row">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 12.5 10 17 19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Memoria controls what it stores and retrieves; it cannot control what an external AI tool already saw.</span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <section aria-labelledby="proof-title">
+          <div class="section-head">
+            <h2 id="proof-title">What Memoria can prove</h2>
+            <p>
+              Memoria explains the context package it would assemble. It does not claim to know what the downstream model actually used.
+            </p>
+          </div>
+          <div class="proof-grid">
+            <article class="proof-card">
+              <strong>Share</strong>
+              <h3>What it would share</h3>
+              <p>Approved project context selected for the current request.</p>
+            </article>
+            <article class="proof-card">
+              <strong>Suppress</strong>
+              <h3>What it suppressed</h3>
+              <p>Counts for inactive, replaced, archived, deprecated, wrong-scope, or no-match context.</p>
+            </article>
+            <article class="proof-card">
+              <strong>Explain</strong>
+              <h3>Why</h3>
+              <p>Safe reason codes, match metadata, freshness warnings, and review suggestions.</p>
+            </article>
+            <article class="proof-card">
+              <strong>Receipt</strong>
+              <h3>A content-free receipt hash</h3>
+              <p>A stable metadata summary without raw prompts, queries, source code, paths, or tool payloads.</p>
+            </article>
+          </div>
+        </section>
+
+        <section aria-labelledby="features-title">
+          <div class="section-head">
+            <h2 id="features-title">Built around the approval-first beta loop.</h2>
+            <p>Memoria is intentionally narrow in the private beta: local project memory, review before activation, preview before reuse, and content-free decision metadata.</p>
+          </div>
+          <div class="features">
+            <article class="feature">
+              <span class="feature-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 11.5 10 15.5 18 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M4.5 4.5h15v15h-15z" stroke="currentColor" stroke-width="1.7" />
+                </svg>
+              </span>
+              <h3>Approval-first memory</h3>
+              <p>New project context starts as a proposal. Approve it, edit it, or reject it before it can become active memory.</p>
+            </article>
+            <article class="feature">
+              <span class="feature-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 6h16M4 12h10M4 18h7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path d="m16 16 2 2 3-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <h3>Context Preview</h3>
+              <p>See approved project memory, suppression counts, freshness warnings, and context receipt metadata before a tool receives context.</p>
+            </article>
+            <article class="feature">
+              <span class="feature-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 5.5h12v13H6z" stroke="currentColor" stroke-width="1.8" />
+                  <path d="M9 9h6M9 12h6M9 15h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+              </span>
+              <h3>Local-first project scope</h3>
+              <p>Memoria stores beta data locally by default in SQLite. Memories are project-scoped, editable, archivable, and exportable.</p>
+            </article>
+            <article class="feature">
+              <span class="feature-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M7 8h10M7 12h10M7 16h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                  <path d="M4.5 4.5h15v15h-15z" stroke="currentColor" stroke-width="1.8" />
+                </svg>
+              </span>
+              <h3>Governed MCP tools</h3>
+              <p>AI clients can propose pending memory, retrieve approved context, preview context packages, and read content-free History without self-approval.</p>
+            </article>
+            <article class="feature">
+              <span class="feature-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 6h14M5 12h14M5 18h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                  <path d="m16 16 1.5 1.5L21 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <h3>Context Package Receipts</h3>
+              <p>Receipts summarize used and suppressed context with safe metadata, counts, reason codes, and a content-free receipt hash.</p>
+            </article>
+            <article class="feature">
+              <span class="feature-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 7h12M6 12h8M6 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                  <path d="M4 4h16v16H4z" stroke="currentColor" stroke-width="1.8" />
+                </svg>
+              </span>
+              <h3>Evidence and review suggestions</h3>
+              <p>Inbox cues show likely duplicates, possible replacements, and overlaps as pending review work. Suggestions never activate memory.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="demo" class="demo" aria-labelledby="demo-title">
+          <div class="section-head">
+            <h2 id="demo-title">The 30-second demo.</h2>
+            <p>That is the core loop: approve once, reuse safely.</p>
+          </div>
+          <div class="script">
+            <ol>
+              <li>Store a project convention as a pending proposal.</li>
+              <li>Approve or edit it in Memoria.</li>
+              <li>Open Context Preview to see what Memoria would share, suppress, and explain.</li>
+              <li>Check the content-free receipt, History cues, and review suggestions.</li>
+            </ol>
+          </div>
+          <div class="boundary">
+            <strong>Private beta boundary</strong>
+            <p class="plain-copy">
+              Memoria is a local developer preview. It is not production security, DLP, compliance, auth, a hosted cloud service, broad repo ingestion, or automatic learning.
+            </p>
+          </div>
+        </section>
+
+        <section aria-labelledby="faq-title">
+          <div class="section-head">
+            <h2 id="faq-title">Skeptical developer FAQ.</h2>
+            <p>Short answers for the objections that matter before a tester gives Memoria five minutes.</p>
+          </div>
+          <div class="faq">
+            <article class="faq-item">
+              <h3>Is this just RAG?</h3>
+              <p>No. RAG retrieves facts from documents. Memoria focuses on approved project context that should influence future AI-tool use.</p>
+            </article>
+            <article class="faq-item">
+              <h3>Does Memoria automatically learn my repo?</h3>
+              <p>No. The private beta is approval-first. Pending memories stay inactive until approved.</p>
+            </article>
+            <article class="faq-item">
+              <h3>Can an AI tool approve its own memory?</h3>
+              <p>No. Governed MCP tools can create pending proposals and retrieve approved context, but approval stays in Memoria.</p>
+            </article>
+            <article class="faq-item">
+              <h3>What is a receipt?</h3>
+              <p>A receipt is content-free metadata for what Memoria would share or suppress. It does not store raw prompts, queries, source code, paths, or tool payloads.</p>
+            </article>
+            <article class="faq-item">
+              <h3>Where is data stored?</h3>
+              <p>The private beta stores data locally by default in SQLite. The tester database is usually inside the tester folder.</p>
+            </article>
+            <article class="faq-item">
+              <h3>Do testers receive source code?</h3>
+              <p>No. Private beta testers receive a binary package. The binary is a beta boundary, not DRM.</p>
+            </article>
+          </div>
+        </section>
+
+        <section aria-labelledby="final-title">
+          <div class="final-cta">
+            <h2 id="final-title">Try the private beta.</h2>
+            <p class="plain-copy">
+              If you use Claude Code, Codex, Cursor, or another AI coding tool and keep repeating the same repo context, Memoria is ready for blunt beta feedback.
+            </p>
+            <div class="cta-row">
+              <a class="button primary" href="mailto:sausagianluca@gmail.com?subject=Memoria%20private%20beta%20request&body=Hi%20Gianluca%2C%0A%0AI%27d%20like%20to%20test%20Memoria.%0AOS%20%28Windows%20preferred%20for%20current%20beta%29%3A%20%0AAI%20coding%20tool%3A%20%0ACan%20test%20in%20the%20next%2048%20hours%3A%20yes%2Fno%0A%0AI%20will%20use%20fake%20demo%20memory%20only.%0AI%20will%20not%20enter%20API%20keys%2C%20passwords%2C%20private%20code%2C%20customer%20data%2C%20PII%2C%20or%20regulated%20data.%0A">Request beta access</a>
+              <a class="button secondary" href="#top">Back to top</a>
+            </div>
+            <div class="beta-request">
+              <h3>How beta access works</h3>
+              <p class="plain-copy">Memoria uses email opt-in for now so the first testers stay small and trustworthy. There is no signup form or account yet.</p>
+              <p class="plain-copy">The current private beta package is Windows-first. Tell me if you want to test on macOS or Linux so I can route you to the right path later.</p>
+              <ul>
+                <li>Click Request beta access, or email directly if the button opens the wrong app.</li>
+                <li>Include your OS (Windows preferred for current beta) and the AI coding tool you want to test.</li>
+                <li>Suggested message: Hi Gianluca, I would like to test Memoria. OS (Windows preferred for current beta): __. AI coding tool: __. Can test in the next 48 hours: yes/no. I will use fake demo memory only. I will not enter API keys, passwords, private code, customer data, PII, or regulated data.</li>
+                <li>Use fake demo memory only; the beta package does not need source repo access.</li>
+              </ul>
+              <div class="email-fallback" aria-label="Email fallback">
+                <strong>Email fallback</strong>
+                <span>Send to <code>sausagianluca@gmail.com</code></span>
+                <span>Subject: <code>Memoria private beta request</code></span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span>Memoria private beta. Local-first by default. Approval-first by design.</span>
+      </footer>
+    </div>
+  </body>
+</html>
