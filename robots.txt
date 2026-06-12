@@ -1,0 +1,4 @@
+﻿User-agent: *
+Allow: /
+
+Sitemap: https://gianluca-dev-stack.github.io/sitemap.xml
