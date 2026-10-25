@@ -14,6 +14,6 @@ Memoria is in private preview. This repository contains the public project websi
 
 ## Connect
 
-[LinkedIn](https://www.linkedin.com/in/gianluca-sausa-46b1a7324/)
+[LinkedIn](https://www.linkedin.com/in/gianluca-sausa/)
 
 I’m seeking software engineering and related CS internships.
